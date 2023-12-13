@@ -1,0 +1,346 @@
+<div class="table-container">
+    <h2 class="container h2">Liste des Tâches</h2>
+
+    <div class="text-right mt-3">
+        <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" placeholder="Search..." class="w-full sm:w-auto"[(ngModel)]="searchFilter" (ngModelChange)="applySearchFilter()"/>
+        </span>
+    </div>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th scope="col">Nom de la Tâche</th>
+            <th scope="col">Affecté à</th>
+            <th scope="col">Catégorie</th>
+            <th scope="col">Statut</th>
+            <th scope="col">Priorité</th>
+            <th scope="col">Date de Début</th>
+            <th scope="col">Date de Fin</th>
+            <th scope="col">Description</th>
+            <th scope="col">Heures estimées</th>
+            <th scope="col">Actions</th> <!-- Ajout de la colonne Actions -->
+        </tr>
+        </thead>
+        <tbody>
+          <ng-container *ngFor="let task of tasks">
+              <tr>
+            <td>{{ task.taskName }}</td>
+            <td>{{ task.developer }}</td>
+            <td>{{ task.category }}</td>
+            <td>
+                <span [ngClass]="'status-' + task.status.toLowerCase()">{{ task.status }}</span>
+            </td>
+
+            <td>
+                <span class="priority-{{ task.priority | lowercase }}">{{ task.priority }}</span>
+            </td>
+            <td>{{ task.startDate }}</td>
+            <td>{{ task.endDate }}</td>
+            <td>{{ task.taskDescription }}</td>
+            <td>{{ task.estimatedHours }}</td>
+            <td>
+                <div class="d-flex">
+
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning"(click)="confirmDelete(task)" ></button>
+
+
+               <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success" (click)="openTaskDialog(task)" ></button>
+                    <p-dialog [(visible)]="showTaskDialog" header="Liste des Tâches" [modal]="true" [style]="{width: '450px'}">
+                        <ng-template pTemplate="content">
+                            <!-- Contenu du dialogue -->
+                            <div class="form-group">
+                                <label for="name">Task Name</label>
+                                <input type="text" pInputText id="name" [(ngModel)]="task.taskName" required class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for=" developer"> developer</label>
+                                <p-dropdown id=" developer" [options]=" developer" [(ngModel)]="task. developer" placeholder="Select a  developer"></p-dropdown>
+                            </div>
+                            <div class="form-group">
+                                <label for="description">Description</label>
+                                <textarea id="description" pInputTextarea [(ngModel)]="task.taskDescription" required rows="3" cols="20"></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="category">Category</label>
+
+                                <p-dropdown id="category" [options]="category"[(ngModel)]="task.category" placeholder="Select a category"></p-dropdown>
+                            </div>
+                            <div class="form-group">
+                                <label for="status">Status</label>
+                                <p-dropdown id="status" [options]="statuses" [(ngModel)]="task.status" placeholder="Select a Status"></p-dropdown>
+                            </div>
+                            <div class="form-group">
+                                <label for="priority">priority</label>
+
+                                <p-dropdown id="priority" [options]="priority"[(ngModel)]="task.priority" placeholder="Select a priority"></p-dropdown>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="estimatedHours">Estimated Hours</label>
+                                <p-inputNumber id="estimatedHours" [(ngModel)]="task.estimatedHours" [min]="0"></p-inputNumber>
+                            </div>
+                            <div class="form-group">
+                                <label for="startDate">Start Date</label>
+                                <input type="date" pInputText id="startDate" [(ngModel)]="task.startDate" />
+                            </div>
+                            <div class="form-group">
+                                <label for="endDate">End Date</label>
+                                <input type="date" pInputText id="endDate" [(ngModel)]="task.endDate" />
+                            </div>
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <!-- Pied du dialogue avec les boutons de sauvegarde et d'annulation -->
+                            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveTask()"></button>
+                        </ng-template>
+                    </p-dialog>
+                </div>
+            </td>
+        </tr>
+
+          </ng-container>
+
+        </tbody>
+    </table>
+
+
+
+    <div class="confirmation-dialog" *ngIf="displayConfirmation">
+        <div class="confirmation-content">
+            <p>Are you sure you want to delete this task?</p>
+            <button pButton pRipple label="Cancel" (click)="hideConfirmationDialog()"></button>
+            <button pButton pRipple label="Delete" class="p-button-danger" (click)="onDeleteConfirmed()"></button>
+        </div>
+    </div>
+
+    <div class="card flex flex-column align-items-center">
+        <h5 class="text-left w-full">Pie Chart</h5>
+        <p-chart type="pie" [data]="pieData"></p-chart>
+    </div>
+
+
+
+</div>
+<div class="text-right mt-3">
+        <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" placeholder="Search..." class="w-full sm:w-auto"[(ngModel)]="searchFilter" (ngModelChange)="applySearchFilterS()"/>
+        </span>
+</div>
+<div class="table-container">
+    <h2 class="container h2">Liste des Clients</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Nom</th>
+            <th>Adresse</th>
+            <th>Téléphone</th>
+            <th>Email</th>
+            <th>Travail demandé</th>
+            <th>Exigences spécifiques</th>
+            <th>Date limite de livraison</th>
+            <th scope="col">Actions</th> <!-- Ajout de la colonne Actions -->
+
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let client of clients">
+            <td>{{ client.name }}</td>
+            <td>{{ client.address }}</td>
+            <td>{{ client.phone }}</td>
+            <td>{{ client.email }}</td>
+            <td>{{ client.workRequested }}</td>
+            <td>{{ client.specificRequirements }}</td>
+            <td>{{ client.deadline }}</td>
+            <td>
+                <div class="d-flex">
+                    <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning action-button" (click)="confirmDeleteClient(client)"></button>
+                    <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success action-button" (click)="openClientDialog(client)"></button>
+                    <p-dialog [(visible)]="showClientDialog" header="Liste des Tâches" [modal]="true" [style]="{width: '450px'}">
+                        <ng-template pTemplate="content">
+                            <!-- Contenu du dialogue -->
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" pInputText id="nameclient" [(ngModel)]="client.name" required class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Adresse</label>
+                                <input type="text" pInputText id="address" [(ngModel)]="client.address" required class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="estimatedHours">Teléphone</label>
+                                <p-inputNumber id="phone" [(ngModel)]="client.phone" [min]="0"></p-inputNumber>
+                            </div>
+                            <div class="form-group">
+                                <label for="name">email</label>
+                                <input type="text" pInputText id="email" [(ngModel)]="client.email" required class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Travail demandé </label>
+                                <input type="text" pInputText id="workRequested" [(ngModel)]="client.workRequested" required class="form-control" />
+                            </div>
+                            <div class="form-group">
+                                <label for="name">Exigences spécifiques</label>
+                                <input type="text" pInputText id="specificRequirements" [(ngModel)]="client.specificRequirements" required class="form-control" />
+                            </div>
+
+                            <div class="form-group">
+                                <label for="startDate">Deadline</label>
+                                <input type="date" pInputText id="deadline" [(ngModel)]="client.deadline" />
+                            </div>
+
+                        </ng-template>
+                        <ng-template pTemplate="footer">
+                            <!-- Pied du dialogue avec les boutons de sauvegarde et d'annulation -->
+                            <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
+                            <button pButton pRipple label="Save" icon="pi pi-check" class="p-button-text" (click)="saveTask()"></button>
+                        </ng-template>
+                    </p-dialog>
+                </div>
+            </td>
+
+        </tr>
+        </tbody>
+    </table>
+
+
+</div>
+
+<div class="table-container">
+    <h2 class="container h2">Liste des Utilisateurs</h2>
+    <table class="table table-striped">
+        <thead>
+        <tr>
+            <th>Photo</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Date de Naissance</th>
+            <th>Genre</th>
+            <th>Poste</th>
+            <th>Téléphone</th>
+            <th>Email</th>
+            <th>Adresse</th>
+            <th>Disponibilité</th>
+            <th>Niveau d'Expérience</th>
+            <th>Date d'embauche</th>
+            <th>CV</th>
+            <th>Portfolio</th>
+            <th scope="col">Actions</th>
+
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let user of users">
+            <td>{{ user.photo }}</td>
+            <td>{{ user.nom }}</td>
+            <td>{{ user.prenom }}</td>
+            <td>{{ user.dateNaissance }}</td>
+            <td>{{ user.genre }}</td>
+            <td>{{ user.position }}</td>
+            <td>{{ user.tel }}</td>
+            <td>{{ user.email }}</td>
+            <td>{{ user.adresse }}</td>
+            <td>{{ user.availability }}</td>
+            <td>{{ user.experienceLevel }}</td>
+            <td>{{ user.hireDate }}</td>
+            <td>{{ user.cv }}</td>
+            <td>{{ user.portfolio }}</td>
+            <td>
+                <button pButton pRipple icon="pi pi-trash" class="p-button-rounded p-button-warning action-button" (click)="confirmDeleteUser(user)"></button>
+                <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success action-button" (click)=" openUserDialog(user)"></button>
+            </td>
+        </tr>
+        <p-dialog [(visible)]="showUserDialog" header="Modifier l'utilisateur" [modal]="true" [style]="{width: '450px'}">
+            <ng-template pTemplate="content">
+                <!-- Contenu du dialogue pour l'édition de l'utilisateur -->
+                <!-- Contenu du dialogue pour l'édition de l'utilisateur -->
+                <div class="form">
+                    <div class="form-group">
+                        <label for="photo">Photo</label>
+                        <input type="text" pInputText id="photo" [(ngModel)]="user.photo" required class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="nom">Nom</label>
+                        <input type="text" pInputText id="nom" [(ngModel)]="user.nom" required class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="prenom">Prénom</label>
+                        <input type="text" pInputText id="prenom" [(ngModel)]="user.prenom" required class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="dateNaissance">Date de Naissance</label>
+                        <input type="date" pInputText id="dateNaissance" [(ngModel)]="user.dateNaissance" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="genre">Genre</label>
+                        <input type="text" pInputText id="genre" [(ngModel)]="user.genre" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="poste">Poste</label>
+                        <input type="text" pInputText id="poste" [(ngModel)]="user.position" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="tel">Téléphone</label>
+                        <input type="text" pInputText id="tel" [(ngModel)]="user.tel" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email</label>
+                        <input type="email" pInputText id="useremail" [(ngModel)]="user.email" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="adresse">Adresse</label>
+                        <input type="text" pInputText id="adresse" [(ngModel)]="user.adresse" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="disponibilite">Disponibilité</label>
+                        <input type="text" pInputText id="disponibilite" [(ngModel)]="user.availability" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="experience">Niveau d'Expérience</label>
+                        <input type="text" pInputText id="experience" [(ngModel)]="user.experienceLevel" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="hireDate">Date d'embauche</label>
+                        <input type="date" pInputText id="hireDate" [(ngModel)]="user.hireDate" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="cv">CV</label>
+                        <input type="text" pInputText id="cv" [(ngModel)]="user.cv" class="form-control" />
+                    </div>
+                    <div class="form-group">
+                        <label for="portfolio">Portfolio</label>
+                        <input type="text" pInputText id="portfolio" [(ngModel)]="user.portfolio" class="form-control" />
+                    </div>
+                </div>
+
+            </ng-template>
+            <ng-template pTemplate="footer">
+                <div class="confirmation-content">
+                <p>Êtes-vous sûr de vouloir supprimer cet utilisateur ?</p>
+                <!-- Pied du dialogue avec les boutons de sauvegarde et d'annulation -->
+                <button pButton pRipple label="Annuler" icon="pi pi-times" class="p-button-text" (click)="hideConfirmationDialog()"></button>
+                <button pButton pRipple label="Enregistrer" icon="pi pi-check" class="p-button-text" (click)="onDeleteUserConfirmed()"></button>
+                </div>
+            </ng-template>
+        </p-dialog>
+        </tbody>
+    </table>
+</div>
+<div class="card">
+    <h5>Linear Chart</h5>
+    <p-chart type="line" [data]="lineData" [options]="lineOptions"></p-chart>
+</div>
+<div class="card flex flex-column align-items-center">
+    <h5 class="text-left w-full">Polar Area Chart</h5>
+    <p-chart type="polarArea" [data]="polarData" [options]="polarOptions"></p-chart>
+</div>
+<div class="card flex flex-column align-items-center">
+    <h5 class="text-left w-full">Pie Chart</h5>
+    <p-chart type="pie" [data]="pieDataa" [options]="pieOptions"></p-chart>
+</div>
+
+
+
+

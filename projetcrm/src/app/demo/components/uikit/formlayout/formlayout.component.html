@@ -1,0 +1,46 @@
+<div class="col-12">
+    <div class="card form-container">
+        <h5>Ajouter une Tâche</h5>
+        <div class="p-fluid p-formgrid grid">
+            <form [formGroup]="taskForm" >
+                <div class="field col-12 form-field">
+                    <label for="taskName">Nom de la Tâche</label>
+                    <input pInputText id="taskName" type="text" formControlName="taskName" />
+                </div>
+                <div class="field col-12 form-field">
+                    <label for="developer">Affecter à</label>
+                    <p-dropdown [options]="assignees" id="developer" optionLabel="name" formControlName="developer"></p-dropdown>
+                </div>
+                <div class="field col-12 form-field">
+                    <label for="category">Catégorie</label>
+                    <p-dropdown [options]="categories" id="category" optionLabel="name" formControlName="category"></p-dropdown>
+                </div>
+                <div class="field col-12 form-field">
+                    <label for="priority">Priorité</label>
+                    <p-dropdown [options]="priorities" id="priority" formControlName="priority"></p-dropdown>
+                </div>
+                <div class="field col-12 form-field">
+                    <label for="status">Statut</label>
+                    <p-dropdown [options]="statuses" id="status" formControlName="status"></p-dropdown>
+                </div>
+                <div class="field col-12 form-field">
+                    <label for="taskDescription">Description de la Tâche</label>
+                    <textarea pInputTextarea id="taskDescription" formControlName="taskDescription"></textarea>
+                </div>
+                <div class="field col-12 form-field">
+                    <label for="estimatedHours">Heure estimée (en heures)</label>
+                    <input pInputText id="estimatedHours" type="number" formControlName="estimatedHours" />
+                </div>
+                <div class="field col-12 form-field">
+                    <label for="startDate">Date de début</label>
+                    <p-calendar id="startDate" formControlName="startDate"></p-calendar>
+                </div>
+                <div class="field col-12 form-field">
+                    <label for="endDate">Date de fin</label>
+                    <p-calendar id="endDate" formControlName="endDate"></p-calendar>
+                </div>
+            </form>
+        </div>
+        <button class="center-button submit-button" pButton label="Ajouter la Tâche" (click)="onSubmit()" ></button>
+    </div>
+</div>

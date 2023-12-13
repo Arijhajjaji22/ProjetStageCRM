@@ -1,0 +1,57 @@
+<div class="container">
+    <h2>Gestion des Factures</h2>
+
+    <button (click)="showAddForm()" class="btn btn-primary">Ajouter une facture</button>
+
+    <!-- Formulaire d'ajout d'une facture -->
+    <div *ngIf="showAddFormFlag">
+        <h3>Ajouter une facture</h3>
+        <form (ngSubmit)="addInvoice()">
+            <div class="form-group">
+                <label for="invoiceNumber">Numéro de facture :</label>
+                <input type="text" class="form-control" id="invoiceNumber" name="invoiceNumber" [(ngModel)]="newInvoice.invoiceNumber" required>
+            </div>
+            <div class="form-group">
+                <label for="amount">Montant :</label>
+                <input type="number" class="form-control" id="amount" name="amount"  [(ngModel)]="newInvoice.amount" required>
+            </div>
+            <div class="form-group">
+                <label for="clientName">Nom du client :</label>
+                <input type="text" class="form-control" id="clientName" name="clientName"[(ngModel)]="newInvoice.clientName" required>
+            </div>
+            <div class="form-group">
+                <label for="invoiceDate">Date de la facture :</label>
+                <input type="date" class="form-control" id="invoiceDate" name="invoiceDate"[(ngModel)]="newInvoice.invoiceDate" required>
+            </div>
+            <button type="submit" class="btn btn-success">Ajouter</button>
+        </form>
+
+
+
+    <hr>
+        <div class="text-right mt-3">
+        <span class="p-input-icon-left">
+            <i class="pi pi-search"></i>
+            <input pInputText type="text" placeholder="Search..." class="w-full sm:w-auto"[(ngModel)]="searchFilter" (ngModelChange)="searchInvoices()"/>
+        </span>
+        </div>
+
+
+    <!-- Liste des factures -->
+    <h3>Liste des factures</h3>
+    <ul class="list-group">
+        <li class="list-group-item" *ngFor="let invoice of invoices; let i = index">
+            Facture {{ invoice.invoiceNumber }} - Montant : {{ invoice.amount | currency }} - Client : {{ invoice.clientName }} - Date : {{ invoice.invoiceDate | date }}
+            <button (click)="deleteInvoice(i)" class="btn btn-danger btn-sm float-right">Supprimer</button>
+        </li>
+    </ul>
+
+
+    <div class="card flex flex-column align-items-center">
+        <h5 class="text-left w-full">Pie Chart</h5>
+        <p-chart type="pie" [data]="pieData"></p-chart>
+    </div>
+
+</div>
+
+</div>
